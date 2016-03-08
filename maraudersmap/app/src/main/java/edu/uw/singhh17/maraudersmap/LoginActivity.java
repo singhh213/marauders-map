@@ -63,7 +63,8 @@ public class LoginActivity extends AppCompatActivity {
                     //code to add a user
                     Firebase userRef = ref.child(mPhoneNumber);
                     userRef.child("fullName").setValue(fullName);
-
+                    userRef.child("lat").setValue(38.0);
+                    userRef.child("long").setValue(-77.0);
 
 
                     Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
