@@ -5,4 +5,18 @@ package edu.uw.singhh17.maraudersmap;
  */
 public class UserDetail {
 
+    private String fullName;
+    public UserDetail() {}
+    public UserDetail(String fullName) {
+        this.fullName = fullName;
+
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
 }
