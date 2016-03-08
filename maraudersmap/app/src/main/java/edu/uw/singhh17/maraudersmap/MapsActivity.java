@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Marker newMarker = mMap.addMarker(markerOptions);
 //                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng));
                     markersArray.add(newMarker);
-                    Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
+//                    Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                 }
 
                 //zooms in my location
