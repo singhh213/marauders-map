@@ -1,14 +1,19 @@
 package edu.uw.singhh17.maraudersmap;
 
 import android.Manifest;
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -19,14 +24,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.BubbleIconFactory;
+import com.google.maps.android.ui.IconGenerator;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -36,7 +47,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker marker;
     private Firebase myFirebaseRef;
     Firebase userRef;
-    private int count;
+    private ArrayList<Marker> markersArray;
+    private IconGenerator iconFactory;
+    private android.support.v4.app.FragmentManager fragmentManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,20 +71,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
+        fragmentManager = getSupportFragmentManager();
+        iconFactory = new IconGenerator(this);
+        TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        final String mPhoneNumber = tMgr.getLine1Number();
+        Log.d("PHONE NUMBER", "onCreate: " + mPhoneNumber);
         myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
-        userRef = myFirebaseRef.child("harpreet");
-        count = 0;
+        //code to add a user
+//        Firebase userRef = myFirebaseRef.child("12069809800");
+//        userRef.child("fullName").setValue("Jamielenn Uemura");
+
+        userRef = myFirebaseRef.child(mPhoneNumber);
+        markersArray = new ArrayList<Marker>();
+
 
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+
+                for (Marker x : markersArray) {
+                    x.remove();
+                }
 //                Log.d("datachanged", "onDataChange: data has been changed");
 //                System.out.println("There are " + snapshot.getChildrenCount() + " users");
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    //LatLng latLng= new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
-                    //Log.d("DATACHANGED", "onDataChange: " + latLng.toString());
+                    LatLng latLng= new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
+                    String fullName = (String) postSnapshot.child("fullName").getValue();
+                    MarkerOptions markerOptions = new MarkerOptions().
+                            icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(fullName))).
+                            position(latLng).
+                            anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+                    Marker newMarker = mMap.addMarker(markerOptions);
+//                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng));
+                    markersArray.add(newMarker);
+//                    Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                 }
-                //lat long changed for user.
+
+                //zooms in my location
+//                CameraUpdate center=
+//                        CameraUpdateFactory.newLatLng(new LatLng((double) snapshot.child(mPhoneNumber).child("lat").getValue(),
+//                                (double) snapshot.child(mPhoneNumber).child("long").getValue()));
+//                CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+//
+//                mMap.moveCamera(center);
+//                mMap.animateCamera(zoom);
+
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -78,7 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
-
 
     /**
      * Manipulates the map once available.
@@ -92,7 +137,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+        {
+            @Override
+            public boolean onMarkerClick(Marker arg0) {
+                Log.d("no", "cliked on marker");
+                Intent intent = new Intent(MapsActivity.this, UserInfo.class);
+                startActivity(intent);
 
+//                android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+//                ft.add(R.id.drawer_layout, new UserDetail());
+//                ft.commit();
+                return false;
+            }
+        });
         mUiSettings = mMap.getUiSettings();
         mUiSettings.setZoomControlsEnabled(true);
     }
@@ -103,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LocationRequest request = new LocationRequest();
         request.setInterval(10000);
-        request.setFastestInterval(5000);
+        request.setFastestInterval(10000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -125,7 +183,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double currentLatitude = loc.getLatitude();
                 double currentLongitude = loc.getLongitude();
                 LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-                marker = mMap.addMarker(new MarkerOptions().position(latLng));
+//                marker = mMap.addMarker(new MarkerOptions().position(latLng));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 userRef.child("lat").setValue(currentLatitude);
                 userRef.child("long").setValue(currentLongitude);
@@ -146,12 +204,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double currentLongitude = location.getLongitude();
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
-        if(marker.getPosition() == null) {
-            marker = mMap.addMarker(new MarkerOptions().position(latLng));
-        } else {
-//        marker = mMap.addMarker(new MarkerOptions().position(latLng));
-            marker.setPosition(latLng);
-        }
+//        if(marker.getPosition() == null) {
+//            marker = mMap.addMarker(new MarkerOptions().position(latLng));
+//        } else {
+////        marker = mMap.addMarker(new MarkerOptions().position(latLng));
+//            marker.setPosition(latLng);
+//        }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 //        myFirebaseRef.child("message").setValue("Location changed for the " + count);
@@ -159,8 +217,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         userRef.child("lat").setValue(currentLatitude);
         userRef.child("long").setValue(currentLongitude);
         Log.d("LOC CHANGED", "onLocationChanged: firebase called");
-        count++;
-
     }
 
     @Override
