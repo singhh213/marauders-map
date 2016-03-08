@@ -1,9 +1,11 @@
 package edu.uw.singhh17.maraudersmap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,8 +46,10 @@ public class LoginActivity extends AppCompatActivity {
             signIn = (Button) findViewById(R.id.signIn);
 
             Firebase.setAndroidContext(this);
-            ref = new Firebase("https://map-users.firebaseio.com/users" ).child("UserDetail");
+            ref = new Firebase("https://torrid-heat-6248.firebaseio.com/users" );
 
+            TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+            final String mPhoneNumber = tMgr.getLine1Number();
 
             signIn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -53,17 +57,14 @@ public class LoginActivity extends AppCompatActivity {
                     //Creating firebase object
 
                     //Getting values to store
-                    String names = name.getText().toString().trim();
+                    String fullName = name.getText().toString().trim();
 
-                    //Creating Person object
-                    UserDetail user = new UserDetail();
 
-                    //Adding values
-                    user.setFullName(names);
+                    //code to add a user
+                    Firebase userRef = ref.child(mPhoneNumber);
+                    userRef.child("fullName").setValue(fullName);
 
-                    //Storing values to firebase
 
-                    ref.push().setValue(user);
 
                     Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                     startActivity(intent);
