@@ -14,22 +14,26 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText name;
     private Button signIn;
+    Firebase ref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         name = (EditText)findViewById(R.id.name);
         signIn = (Button) findViewById(R.id.signIn);
 
         Firebase.setAndroidContext(this);
+        ref = new Firebase("https://map-users.firebaseio.com/users" ).child("UserDetail");
+
 
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Creating firebase object
-                Firebase ref = new Firebase("https://map-users.firebaseio.com/users" );
 
                 //Getting values to store
                 String names = name.getText().toString().trim();
@@ -41,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
                 user.setFullName(names);
 
                 //Storing values to firebase
-                ref.child("UserDetail").setValue(user);
+
+                ref.push().setValue(user);
 
                 Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                 startActivity(intent);

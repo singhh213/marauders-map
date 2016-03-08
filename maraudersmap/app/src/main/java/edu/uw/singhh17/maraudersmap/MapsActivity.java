@@ -66,8 +66,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                Log.d("datachanged", "onDataChange: data has been changed");
 //                System.out.println("There are " + snapshot.getChildrenCount() + " users");
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    LatLng latLng= new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
-                    Log.d("DATACHANGED", "onDataChange: " + latLng.toString());
+                    //LatLng latLng= new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
+                    //Log.d("DATACHANGED", "onDataChange: " + latLng.toString());
                 }
                 //lat long changed for user.
             }
