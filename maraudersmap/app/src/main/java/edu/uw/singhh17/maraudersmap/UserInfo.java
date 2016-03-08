@@ -16,12 +16,21 @@ public class UserInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
+        Bundle extras = getIntent().getExtras();
+//        if (extras != null) {
+            String fullName = extras.getString("fullName");
+            String phoneNumber = extras.getString("phoneNumber");
+//        }
+
         ImageView profilePic = (ImageView)this.findViewById(R.id.profileImg);
         TextView name = (TextView)this.findViewById(R.id.name);
         final TextView phoneNo = (TextView)this.findViewById(R.id.phoneNo);
         Button sendTxtMsg = (Button)this.findViewById(R.id.sendTxtMsg);
         //final TextView email = (TextView)rootView.findViewById(R.id.email);
         //Button sendEmailMsg = (Button)rootView.findViewById(R.id.sendEmailMsg);
+
+        name.setText(fullName);
+        phoneNo.setText(phoneNumber);
 
         sendTxtMsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,11 +53,15 @@ public class UserInfo extends AppCompatActivity {
     }*/
 
     public void composeText(String number) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setType("vnd.android-dir/mms-sms");
-        intent.setData(Uri.parse("smsto:" + number));
-        startActivity(intent);
+
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+
+
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.setType("vnd.android-dir/mms-sms");
+//        intent.setData(Uri.parse("smsto:" + number));
+//        startActivity(intent);
         /*Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("smsto:"+number));
         startActivity(intent);*/

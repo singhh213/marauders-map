@@ -97,14 +97,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     LatLng latLng= new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
                     String fullName = (String) postSnapshot.child("fullName").getValue();
+                    String phoneNumber = (String) postSnapshot.getKey();
                     MarkerOptions markerOptions = new MarkerOptions().
                             icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(fullName))).
                             position(latLng).
+                            title(phoneNumber).
+                            snippet(fullName).
                             anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
                     Marker newMarker = mMap.addMarker(markerOptions);
 //                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng));
                     markersArray.add(newMarker);
-//                    Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
+                    Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                 }
 
                 //zooms in my location
@@ -142,13 +145,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker arg0) {
                 Log.d("no", "cliked on marker");
+
                 Intent intent = new Intent(MapsActivity.this, UserInfo.class);
+                intent.putExtra("phoneNumber", arg0.getTitle());
+                intent.putExtra("fullName", arg0.getSnippet());
                 startActivity(intent);
 
 //                android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
 //                ft.add(R.id.drawer_layout, new UserDetail());
 //                ft.commit();
-                return false;
+                return true;
             }
         });
         mUiSettings = mMap.getUiSettings();
