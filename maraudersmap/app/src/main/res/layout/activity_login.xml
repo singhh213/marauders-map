@@ -14,11 +14,10 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please enter you username to enter the map"
-        android:textSize="16sp"
+        android:text="Marauders Map"
+        android:textSize="40sp"
         android:gravity="center_horizontal"
-        android:layout_below="@id/logo"
-        android:paddingTop="50dp"/>
+        />
 
 
     <ImageView
@@ -27,13 +26,14 @@
         android:layout_height="500px"
         android:layout_centerHorizontal="true"
         android:src="@drawable/map"
+        android:layout_below="@id/title"
         />
 
     <TextView
         android:id="@+id/instructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please enter you username to enter the map"
+        android:text="Please enter your username to enter the map"
         android:textSize="16sp"
         android:gravity="center_horizontal"
         android:layout_below="@id/logo"
