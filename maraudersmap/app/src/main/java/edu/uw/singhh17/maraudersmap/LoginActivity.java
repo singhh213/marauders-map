@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             ref = new Firebase("https://torrid-heat-6248.firebaseio.com/users" );
 
             TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-            final String mPhoneNumber = tMgr.getLine1Number();
+            final String mPhoneNumber = "12532043931";//tMgr.getLine1Number();
 
             signIn.setOnClickListener(new View.OnClickListener() {
                 @Override

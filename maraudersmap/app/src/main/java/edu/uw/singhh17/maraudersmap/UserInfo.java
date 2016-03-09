@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +47,8 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         ImageView profilePic = (ImageView)this.findViewById(R.id.profileImg);
         TextView name = (TextView)this.findViewById(R.id.name);
         final TextView phoneNo = (TextView)this.findViewById(R.id.phoneNo);
-        Button sendTxtMsg = (Button)this.findViewById(R.id.sendTxtMsg);
+        ImageButton sendTxtMsg = (ImageButton)this.findViewById(R.id.sendTxtMsg);
+        ImageButton callBtn = (ImageButton)this.findViewById(R.id.callBtn);
         //final TextView email = (TextView)rootView.findViewById(R.id.email);
         //Button sendEmailMsg = (Button)rootView.findViewById(R.id.sendEmailMsg);
 

@@ -70,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentManager = getSupportFragmentManager();
         iconFactory = new IconGenerator(this);
         TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-        final String mPhoneNumber = tMgr.getLine1Number();
+        final String mPhoneNumber = "12532043931";//tMgr.getLine1Number();
         Log.d("PHONE NUMBER", "onCreate: " + mPhoneNumber);
         myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
         //code to add a user
