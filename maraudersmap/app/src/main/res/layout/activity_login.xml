@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,12 +10,43 @@
     tools:context="edu.uw.singhh17.maraudersmap.LoginActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please enter you username to enter the map"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/logo"
+        android:paddingTop="50dp"/>
+
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="500px"
+        android:layout_height="500px"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/map"
+        />
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please enter you username to enter the map"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/logo"
+        android:paddingTop="50dp"/>
+
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
-        android:maxLines="1"
+        android:layout_below="@id/instructions"
+        android:padding="20px"
+        android:paddingTop="180px"
         android:singleLine="true" />
 
     <Button
@@ -24,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Sign in"
-        android:onClick="authenticate"
+        android:text="Enter"
+        android:layout_below="@id/name"
         android:textStyle="bold" />
-</LinearLayout>
+</RelativeLayout>

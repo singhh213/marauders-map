@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                     startActivity(intent);
+                    prefs.edit().putBoolean("firstrun", false).commit();
                 }
 
 
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
-            prefs.edit().putBoolean("firstrun", false).commit();
+
         } else {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             startActivity(intent);
