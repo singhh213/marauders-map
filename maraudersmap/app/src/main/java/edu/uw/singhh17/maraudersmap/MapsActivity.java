@@ -1,12 +1,16 @@
 package edu.uw.singhh17.maraudersmap;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
@@ -71,7 +75,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         Firebase.setAndroidContext(this);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,8 +86,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -98,6 +99,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .addApi(LocationServices.API)
                     .build();
         }
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if (!manager.isProviderEnabled( LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+        }
+
         fragmentManager = getSupportFragmentManager();
         iconFactory = new IconGenerator(this);
         TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -134,7 +140,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (contactsMap.containsKey(phoneNumber) || mPhoneNumber == phoneNumber) {
 
-
                         LatLng latLng = new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
                         String fullName = (String) postSnapshot.child("fullName").getValue();
 
@@ -145,7 +150,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 snippet(fullName).
                                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
                         Marker newMarker = mMap.addMarker(markerOptions);
-                        //Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng));
                         markersArray.add(newMarker);
                         //Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                     }
@@ -314,6 +318,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             calIntent.setData(CalendarContract.Events.CONTENT_URI);
             startActivity(calIntent);
 
+
+        } else if (id == R.id.nav_logout) {
+                TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+                String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
+                mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
+                myFirebaseRef.child(mPhoneNumber).removeValue();
+                Log.d("log out", "you should be logged out");
+                SharedPreferences prefs = getSharedPreferences("Map",
+                        MODE_PRIVATE);
+
+                prefs.edit().putBoolean("firstrun", true).commit();
+                Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+                startActivity(intent);
+
+
         } else if (id == R.id.nav_chat) {
             //chat
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -373,6 +392,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             formattedNumber = "1" + formattedNumber;
         }
         return formattedNumber;
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("You must have GPS Location turned on to use this app, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

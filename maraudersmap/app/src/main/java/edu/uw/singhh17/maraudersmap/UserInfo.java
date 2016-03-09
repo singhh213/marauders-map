@@ -1,6 +1,8 @@
 package edu.uw.singhh17.maraudersmap;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.design.widget.NavigationView;
@@ -10,6 +12,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +23,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 public class UserInfo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Firebase myFirebaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,8 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
 
         Bundle extras = getIntent().getExtras();
 //        if (extras != null) {
@@ -136,7 +146,18 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
 
 
 
-//        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_logout) {
+            TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+            String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
+            mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
+            myFirebaseRef.child(mPhoneNumber).removeValue();
+            Log.d("log out", "you should be logged out");
+            SharedPreferences prefs = getSharedPreferences("Map",
+                    MODE_PRIVATE);
+
+            prefs.edit().putBoolean("firstrun", true).commit();
+            Intent intent = new Intent(UserInfo.this, LoginActivity.class);
+            startActivity(intent);
 
 
 
@@ -152,4 +173,13 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private String formatPhoneNumbers(String number) {
+        String formattedNumber = PhoneNumberUtils.stripSeparators(number);
+        if (formattedNumber.length() == 10) {
+            formattedNumber = "1" + formattedNumber;
+        }
+        return formattedNumber;
+    }
+
 }

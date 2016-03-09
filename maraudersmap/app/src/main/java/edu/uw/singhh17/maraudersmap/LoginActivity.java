@@ -37,10 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (prefs.getBoolean("firstrun", true)) {
 
-
             setContentView(R.layout.activity_login);
-
-
 
             name = (EditText)findViewById(R.id.name);
             signIn = (Button) findViewById(R.id.signIn);
