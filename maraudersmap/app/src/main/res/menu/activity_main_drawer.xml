@@ -4,28 +4,33 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_calendar"
             android:icon="@drawable/calendar"
             android:title="Calendar" />
+
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_chat"
+            android:icon="@drawable/mail"
+            android:title="Chat" />
+        <!--<item-->
+            <!--android:id="@+id/nav_manage"-->
+            <!--android:icon="@drawable/ic_menu_manage"-->
+            <!--android:title="Tools" />-->
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"
             android:title="Logout" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
+    <!--<item android:title="Communicate">-->
+        <!--<menu>-->
 
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/mail"
-                android:title="Chat" />
-        </menu>
-    </item>
+            <!--<item-->
+                <!--android:id="@+id/nav_chat"-->
+                <!--android:icon="@drawable/mail"-->
+                <!--android:title="Chat" />-->
+        <!--</menu>-->
+    <!--</item>-->
 
 
 </menu>

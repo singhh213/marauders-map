@@ -47,7 +47,7 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         ImageView profilePic = (ImageView)this.findViewById(R.id.profileImg);
         TextView name = (TextView)this.findViewById(R.id.name);
         final TextView phoneNo = (TextView)this.findViewById(R.id.phoneNo);
-        ImageButton sendTxtMsg = (ImageButton)this.findViewById(R.id.sendTxtMsg);
+//        ImageButton sendTxtMsg = (ImageButton)this.findViewById(R.id.sendTxtMsg);
         ImageButton callBtn = (ImageButton)this.findViewById(R.id.callBtn);
         //final TextView email = (TextView)rootView.findViewById(R.id.email);
         //Button sendEmailMsg = (Button)rootView.findViewById(R.id.sendEmailMsg);
@@ -55,12 +55,12 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         name.setText(fullName);
         phoneNo.setText(phoneNumber);
 
-        sendTxtMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                composeText(phoneNo.getText().toString());
-            }
-        });
+//        sendTxtMsg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                composeText(phoneNo.getText().toString());
+//            }
+//        });
     }
 
     /*public void composeMail(String address) {
@@ -129,18 +129,18 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         int id = item.getItemId();
 
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_calendar) {
             Intent calIntent = new Intent(Intent.ACTION_INSERT);
             calIntent.setData(CalendarContract.Events.CONTENT_URI);
             startActivity(calIntent);
 
 
 
-        } else if (id == R.id.nav_manage) {
+//        } else if (id == R.id.nav_manage) {
 
 
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_chat) {
             //chat
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_DEFAULT);

@@ -74,18 +74,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_calendar) {
             Intent calIntent = new Intent(Intent.ACTION_INSERT);
             calIntent.setData(CalendarContract.Events.CONTENT_URI);
             startActivity(calIntent);
 
 
 
-        } else if (id == R.id.nav_manage) {
+//        } else if (id == R.id.nav_manage) {
 
 
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_chat) {
             //chat
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
