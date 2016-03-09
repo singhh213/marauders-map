@@ -58,6 +58,7 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         TextView name = (TextView)this.findViewById(R.id.name);
         final TextView phoneNo = (TextView)this.findViewById(R.id.phoneNo);
 //        ImageButton sendTxtMsg = (ImageButton)this.findViewById(R.id.sendTxtMsg);
+        ImageButton sendMsgBtn = (ImageButton)this.findViewById(R.id.msgBtn);
         ImageButton callBtn = (ImageButton)this.findViewById(R.id.callBtn);
         //final TextView email = (TextView)rootView.findViewById(R.id.email);
         //Button sendEmailMsg = (Button)rootView.findViewById(R.id.sendEmailMsg);
@@ -65,12 +66,19 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         name.setText(fullName);
         phoneNo.setText(phoneNumber);
 
-//        sendTxtMsg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                composeText(phoneNo.getText().toString());
-//            }
-//        });
+        sendMsgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                composeText(phoneNo.getText().toString());
+            }
+        });
+
+        callBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeCall(phoneNo.getText().toString());
+            }
+        });
     }
 
     /*public void composeMail(String address) {
@@ -98,6 +106,18 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         /*Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("smsto:"+number));
         startActivity(intent);*/
+    }
+
+    public void makeCall(String number) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:"+number));
+        startActivity(intent);
+
+        //automatically make call
+        //have to add in manifest file: <uses-permission android:name="android.permission.CALL_PHONE" />
+        //Intent intent = new Intent(Intent.ACTION_CALL);
+//        intent.setData(Uri.parse("tel:"+number));
+//        startActivity(intent);
     }
 
     @Override
