@@ -139,13 +139,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     x.remove();
                 }
 
-//                final Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                    }
-//                }, 1000);
-
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
 
                     String phoneNumber = postSnapshot.getKey();
@@ -183,7 +176,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-//                System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
 
@@ -314,8 +306,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         } else if (id == R.id.nav_logout) {
-//                TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-//                String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
                 mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
                 myFirebaseRef.child(mPhoneNumber).removeValue();
                 Log.d("log out", "you should be logged out");

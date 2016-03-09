@@ -26,9 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         prefs = getSharedPreferences("Map", MODE_PRIVATE);
-
     }
 
     @Override

@@ -41,7 +41,7 @@
             android:id="@+id/instructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Please enter your username to enter the map"
+            android:text="Please enter your name to enter the map"
             android:textSize="14sp"
             android:gravity="center_horizontal"
             android:layout_below="@id/logo"

@@ -49,19 +49,15 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
 
         Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-            String fullName = extras.getString("fullName");
-            String phoneNumber = extras.getString("phoneNumber");
-//        }
+        String fullName = extras.getString("fullName");
+        String phoneNumber = extras.getString("phoneNumber");
+
 
         ImageView profilePic = (ImageView)this.findViewById(R.id.profileImg);
         TextView name = (TextView)this.findViewById(R.id.name);
         final TextView phoneNo = (TextView)this.findViewById(R.id.phoneNo);
-//        ImageButton sendTxtMsg = (ImageButton)this.findViewById(R.id.sendTxtMsg);
         ImageButton sendMsgBtn = (ImageButton)this.findViewById(R.id.msgBtn);
         ImageButton callBtn = (ImageButton)this.findViewById(R.id.callBtn);
-        //final TextView email = (TextView)rootView.findViewById(R.id.email);
-        //Button sendEmailMsg = (Button)rootView.findViewById(R.id.sendEmailMsg);
 
         name.setText(fullName);
         phoneNo.setText(phoneNumber);
@@ -81,43 +77,15 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
         });
     }
 
-    /*public void composeMail(String address) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-// The intent does not have a URI, so declare the "text/plain" MIME type
-        emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, address); // recipients
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message text");
-        if (emailIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(emailIntent);
-        }
-    }*/
-
     public void composeText(String number) {
 
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
-
-
-//        Intent intent = new Intent(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_DEFAULT);
-//        intent.setType("vnd.android-dir/mms-sms");
-//        intent.setData(Uri.parse("smsto:" + number));
-//        startActivity(intent);
-        /*Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("smsto:"+number));
-        startActivity(intent);*/
     }
 
     public void makeCall(String number) {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:"+number));
         startActivity(intent);
-
-        //automatically make call
-        //have to add in manifest file: <uses-permission android:name="android.permission.CALL_PHONE" />
-        //Intent intent = new Intent(Intent.ACTION_CALL);
-//        intent.setData(Uri.parse("tel:"+number));
-//        startActivity(intent);
     }
 
     @Override
