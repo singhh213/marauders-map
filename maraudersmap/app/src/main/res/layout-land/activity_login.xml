@@ -13,14 +13,14 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:layout_gravity="center"
         android:src="@drawable/map"
         />
 
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_weight="1.25"
+        android:layout_weight="1"
         android:layout_marginTop="50dp"
         android:paddingRight="10dp"
         android:orientation="vertical">
