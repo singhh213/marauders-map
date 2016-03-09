@@ -54,6 +54,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.os.Handler;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -67,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private IconGenerator iconFactory;
     private android.support.v4.app.FragmentManager fragmentManager;
     private HashMap<String, String> contactsMap;
+    private String mPhoneNumber;
 
 
     @Override
@@ -107,7 +109,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         fragmentManager = getSupportFragmentManager();
         iconFactory = new IconGenerator(this);
         TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-        final String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
+        mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
+        mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
         Log.d("PHONE NUMBER", "onCreate: " + mPhoneNumber);
         myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
         //code to add a user
@@ -125,6 +128,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         markersArray = new ArrayList<Marker>();
         contactsMap = getContactsMap();
+        final Handler handler = new Handler();
+
 
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -134,23 +139,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     x.remove();
                 }
 
+//                final Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                    }
+//                }, 1000);
+
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
 
                     String phoneNumber = postSnapshot.getKey();
 
                     if (contactsMap.containsKey(phoneNumber) || mPhoneNumber == phoneNumber) {
 
-                        LatLng latLng = new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
-                        String fullName = (String) postSnapshot.child("fullName").getValue();
+                        if (postSnapshot.child("lat").getValue() != null && postSnapshot.child("long").getValue() != null) {
 
-                        MarkerOptions markerOptions = new MarkerOptions().
-                                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(fullName))).
-                                position(latLng).
-                                title(phoneNumber).
-                                snippet(fullName).
-                                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-                        Marker newMarker = mMap.addMarker(markerOptions);
-                        markersArray.add(newMarker);
+                            LatLng latLng = new LatLng((double) postSnapshot.child("lat").getValue(), (double) postSnapshot.child("long").getValue());
+                            String fullName = (String) postSnapshot.child("fullName").getValue();
+
+                            MarkerOptions markerOptions = new MarkerOptions().
+                                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(fullName))).
+                                    position(latLng).
+                                    title(phoneNumber).
+                                    snippet(fullName).
+                                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+                            Marker newMarker = mMap.addMarker(markerOptions);
+                            markersArray.add(newMarker);
+                        }
+
                         //Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                     }
                 }
@@ -285,28 +301,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -320,8 +314,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         } else if (id == R.id.nav_logout) {
-                TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-                String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
+//                TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+//                String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
                 mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
                 myFirebaseRef.child(mPhoneNumber).removeValue();
                 Log.d("log out", "you should be logged out");

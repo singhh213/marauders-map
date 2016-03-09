@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
         prefs = getSharedPreferences("Map", MODE_PRIVATE);
-
 
     }
 
@@ -56,13 +56,12 @@ public class LoginActivity extends AppCompatActivity {
                     //Getting values to store
                     String fullName = name.getText().toString().trim();
 
-
+                    String phone = formatPhoneNumbers(mPhoneNumber);
                     //code to add a user
-                    Firebase userRef = ref.child(mPhoneNumber);
+                    Firebase userRef = ref.child(phone);
                     userRef.child("fullName").setValue(fullName);
                     userRef.child("lat").setValue(38.0);
                     userRef.child("long").setValue(-77.0);
-
 
                     Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                     startActivity(intent);
@@ -80,6 +79,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-
+    private String formatPhoneNumbers(String number) {
+        String formattedNumber = PhoneNumberUtils.stripSeparators(number);
+        if (formattedNumber.length() == 10) {
+            formattedNumber = "1" + formattedNumber;
+        }
+        return formattedNumber;
+    }
 }
