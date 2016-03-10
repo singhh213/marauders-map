@@ -48,20 +48,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
-        if (id == R.id.nav_calendar) {
-            Intent calIntent = new Intent(Intent.ACTION_INSERT);
-            calIntent.setData(CalendarContract.Events.CONTENT_URI);
-            startActivity(calIntent);
-
-        } else if (id == R.id.nav_chat) {
-            //chat
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.setType("vnd.android-dir/mms-sms");
-            startActivity(intent);
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

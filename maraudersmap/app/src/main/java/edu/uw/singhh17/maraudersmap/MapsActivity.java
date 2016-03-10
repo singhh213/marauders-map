@@ -66,7 +66,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Firebase userRef;
     private ArrayList<Marker> markersArray;
     private IconGenerator iconFactory;
-    private android.support.v4.app.FragmentManager fragmentManager;
     private HashMap<String, String> contactsMap;
     private String mPhoneNumber;
 
@@ -106,30 +105,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             buildAlertMessageNoGps();
         }
 
-        fragmentManager = getSupportFragmentManager();
         iconFactory = new IconGenerator(this);
         TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
         mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
-        Log.d("PHONE NUMBER", "onCreate: " + mPhoneNumber);
         myFirebaseRef = new Firebase("https://torrid-heat-6248.firebaseio.com/users");
-        //code to add a user
-//        Firebase userRef = myFirebaseRef.child("12064030222");
-//        userRef.child("fullName").setValue("Friend 1");
-//        userRef.child("lat").setValue(48);
-//        userRef.child("long").setValue(-119);
-//
-//        userRef = myFirebaseRef.child("12064077210");
-//        userRef.child("fullName").setValue("Friend 2");
-//        userRef.child("lat").setValue(45);
-//        userRef.child("long").setValue(-119);
 
         userRef = myFirebaseRef.child(mPhoneNumber);
 
         markersArray = new ArrayList<Marker>();
         contactsMap = getContactsMap();
-        final Handler handler = new Handler();
-
 
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,20 +144,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Marker newMarker = mMap.addMarker(markerOptions);
                             markersArray.add(newMarker);
                         }
-
-                        //Log.d("DATACHANGED", "onDataChange: " + postSnapshot.toString());
                     }
                 }
-
-                //zooms in my location
-//                CameraUpdate center=
-//                        CameraUpdateFactory.newLatLng(new LatLng((double) snapshot.child(mPhoneNumber).child("lat").getValue(),
-//                                (double) snapshot.child(mPhoneNumber).child("long").getValue()));
-//                CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
-//
-//                mMap.moveCamera(center);
-//                mMap.animateCamera(zoom);
-
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -197,8 +170,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Log.d("no", "cliked on marker");
-
                 Intent intent = new Intent(MapsActivity.this, UserInfo.class);
                 intent.putExtra("phoneNumber", arg0.getTitle());
                 intent.putExtra("fullName", arg0.getSnippet());
@@ -254,16 +225,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("LOC CHANGED", "onLocationChanged: location changed");
-
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         userRef.child("lat").setValue(currentLatitude);
         userRef.child("long").setValue(currentLongitude);
-        Log.d("LOC CHANGED", "onLocationChanged: firebase called");
     }
 
     @Override
@@ -304,18 +269,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             calIntent.setData(CalendarContract.Events.CONTENT_URI);
             startActivity(calIntent);
 
-
         } else if (id == R.id.nav_logout) {
                 mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
                 myFirebaseRef.child(mPhoneNumber).removeValue();
-                Log.d("log out", "you should be logged out");
                 SharedPreferences prefs = getSharedPreferences("Map",
                         MODE_PRIVATE);
 
                 prefs.edit().putBoolean("firstrun", true).commit();
                 Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
                 startActivity(intent);
-
 
         } else if (id == R.id.nav_chat) {
             //chat
@@ -330,7 +292,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-
+    //parses the contacts in user's phone and stores them in the specified format.
     private HashMap<String, String> getContactsMap() {
         HashMap<String, String> myMap = new HashMap<String, String>();
         ContentResolver cr = getContentResolver();
@@ -353,7 +315,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         switch (phoneType)
                         {
                             case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                                Log.e(name + ": TYPE_MOBILE", " " + phoneNo + " " + phoneType);
                                 phoneNo = formatPhoneNumbers(phoneNo);
                                 myMap.put(phoneNo, name);
                                 break;
@@ -364,12 +325,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     pCur.close();
                 }
             }
-            Log.v("MYMAP", myMap.toString());
         }
 
         return myMap;
     }
 
+    //formats the phone numbers to contain and initial 1
     private String formatPhoneNumbers(String number) {
         String formattedNumber = PhoneNumberUtils.stripSeparators(number);
         if (formattedNumber.length() == 10) {
@@ -378,6 +339,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return formattedNumber;
     }
 
+    //alers whether user has location turned on or off.
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("You must have GPS Location turned on to use this app, do you want to enable it?")

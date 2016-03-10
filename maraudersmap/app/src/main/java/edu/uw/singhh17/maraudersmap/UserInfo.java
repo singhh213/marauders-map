@@ -117,7 +117,6 @@ public class UserInfo extends AppCompatActivity implements NavigationView.OnNavi
             String mPhoneNumber = tMgr.getLine1Number(); //"12532043931";
             mPhoneNumber = formatPhoneNumbers(mPhoneNumber);
             myFirebaseRef.child(mPhoneNumber).removeValue();
-            Log.d("log out", "you should be logged out");
             SharedPreferences prefs = getSharedPreferences("Map",
                     MODE_PRIVATE);
 

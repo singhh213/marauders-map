@@ -12,10 +12,7 @@
             android:id="@+id/nav_chat"
             android:icon="@drawable/mail"
             android:title="Chat" />
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
+
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"
